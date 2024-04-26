@@ -199,19 +199,16 @@ def _evaluate_combo(cards: list[Card]) -> tuple[str, int, int]:
     }
 
     if is_straight() and is_flush():
-        if highest_card(cards) == 14 and 10 in cards:
+        if highest_card() == 14 and 10 in value_counts:
             return ("royal flush", highest_card(), calculate_hand_score(base_scores["royal flush"]))
         
         return ("straight flush", highest_card(), calculate_hand_score(base_scores["straight flush"]))
 
     if 4 in value_counts.values():
-        card_value = max(v for v, count in value_counts.items() if count == 4)
-        return "four of a kind", card_value, calculate_hand_score(base_scores["four of a kind"])
+        return "four of a kind", highest_card(), calculate_hand_score(base_scores["four of a kind"])
 
     if 3 in value_counts.values() and 2 in value_counts.values():
-        three_val = max(v for v, count in value_counts.items() if count == 3)
-        pair_val = max(v for v, count in value_counts.items() if count == 2)
-        return "full house", (three_val, pair_val), calculate_hand_score(base_scores["full house"])
+        return "full house", highest_card(), calculate_hand_score(base_scores["full house"])
 
     if is_flush():
         return "flush", highest_card(), calculate_hand_score(base_scores["flush"])
@@ -220,20 +217,17 @@ def _evaluate_combo(cards: list[Card]) -> tuple[str, int, int]:
         return "straight", highest_card(), calculate_hand_score(base_scores["straight"])
 
     if 3 in value_counts.values():
-        card_value = max(v for v, count in value_counts.items() if count == 3)
-        return "three of a kind", card_value, calculate_hand_score(base_scores["three of a kind"])
+        return "three of a kind", highest_card(), calculate_hand_score(base_scores["three of a kind"])
 
     if list(value_counts.values()).count(2) > 1:
-        pairs = sorted((v for v, count in value_counts.items() if count == 2), reverse=True)
-        return "two pair", (pairs[0], pairs[1]), calculate_hand_score(base_scores["two pair"])
+        return "two pair", highest_card(), calculate_hand_score(base_scores["two pair"])
 
     if 2 in value_counts.values():
-        pair_value = max(v for v, count in value_counts.items() if count == 2)
-        return "one pair", pair_value, calculate_hand_score(base_scores["one pair"])
+        return "one pair", highest_card(), calculate_hand_score(base_scores["one pair"])
 
     return "high card", highest_card(), calculate_hand_score(base_scores["high card"])
 
-def rank_hand(hand: list[Card])-> dict[str, dict[str, any]]:
+def rank_hand(hand: list[Card]) -> tuple[dict[str, any], dict[str, any]]:
     """
     Ranks a poker hand in its best and worst form by considering all possible hand completions, providing information on the hand combination name, the hands themselves, the highest card, and the hand's value respectively.
 
