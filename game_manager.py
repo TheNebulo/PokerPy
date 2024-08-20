@@ -63,6 +63,7 @@ class Game:
             
             if response == True:
                 if player.balance >= self.buy_in_cost:
+                    player.bought_in = True
                     player.balance -= self.buy_in_cost
                     self.pot += self.buy_in_cost
                 else:
